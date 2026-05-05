@@ -163,7 +163,190 @@ GitHub 线上仓库
 - 需要后台程序、数据库、登录、定时任务：考虑 ECS / CVM。
 - 任何项目都建议先用 Git 和 GitHub 管起来。
 
-## 7. 新手操作清单
+## 7. 完整演示流程：从本地修改到 GitHub 更新
+
+如果要现场演示，建议不要只讲概念，而是从一个真实仓库走一遍：打开终端、下载仓库、改一个文件、提交、推送、回到 GitHub 网页刷新。这样同学们会立刻明白“本地文件”和“线上仓库”之间到底发生了什么。
+
+### 现场演示流程
+
+演示前先打开两个窗口：
+
+- 浏览器：打开这个仓库的 GitHub 页面。
+- 终端：进入本地工作路径。
+
+```bash
+cd "/Users/jiangheng/Desktop/Work/2026 年 春夏/【M】routines/git, github, pages and ECS-20260507"
+```
+
+第一步，把线上仓库下载到本地：
+
+```bash
+git clone https://github.com/JiayuREN1127/learn-git-pages-ECS.git
+cd learn-git-pages-ECS
+```
+
+第二步，确认自己在哪个仓库、哪个分支、有没有未保存的改动：
+
+```bash
+pwd
+git status
+git branch
+```
+
+第三步，打开 `guide.md` 或 `README.md`，随便加一句演示用文字。然后回到终端看 Git 发现了什么：
+
+```bash
+git status
+git diff
+```
+
+第四步，把这次修改放进“准备提交区”，再提交成一个版本节点：
+
+```bash
+git add guide.md
+git commit -m "update demo guide"
+```
+
+第五步，把本地提交推送到 GitHub：
+
+```bash
+git push origin main
+```
+
+最后回到浏览器刷新 GitHub 仓库页面：同学们能看到本地刚刚改的内容已经出现在网页上。这就是 Git + GitHub 最核心的闭环。
+
+### 演示时可以顺手讲的“私货”
+
+- **README 是项目门面，不是形式主义。** 如果一个项目没有 README，别人点进来基本等于进了一个没有门牌号的房间。
+- **每次提交只做一件事。** 不要把“改标题、删数据、修 bug、换图片”混在一个 commit 里，否则以后很难追踪。
+- **先 `git status`，再 `git add`。** 这是最便宜的防呆动作，可以避免把临时文件、隐私数据、错误版本一起传上去。
+- **不要把敏感信息传到 GitHub。** API Key、账号密码、未脱敏访谈资料、原始个人数据都不应该进公开仓库。
+- **会 Markdown 的社科同学很占便宜。** 课程主页、研究说明、数据字典、复现流程、读书会资料，都可以先用 Markdown 管起来。
+- **Pages 解决展示，ECS 解决运行。** 静态材料优先 Pages；需要数据库、登录、后台程序时再考虑 ECS。不要一上来就买服务器。
+
+## 8. Git 最常见命令语法速查
+
+Git 命令可以先记成一个句型：
+
+```bash
+git <动作> <对象> <选项>
+```
+
+例如 `git add guide.md` 的意思是：让 Git 把 `guide.md` 这个文件加入下一次提交。
+
+### 第一次配置
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+git config --list
+```
+
+作用：告诉 Git 提交记录里显示谁做了修改。`--global` 表示对这台电脑上的所有仓库生效。
+
+### 创建或下载仓库
+
+```bash
+git init
+git clone <仓库地址>
+```
+
+- `git init`：把当前文件夹变成 Git 仓库。
+- `git clone`：把 GitHub 上的仓库下载到本地。
+
+新手更常用 `git clone`，因为课程项目或团队项目通常已经有线上仓库。
+
+### 查看当前状态
+
+```bash
+git status
+git log --oneline
+git diff
+```
+
+- `git status`：看哪些文件改了、哪些文件准备提交。
+- `git log --oneline`：用一行一个版本的方式看提交历史。
+- `git diff`：看文件具体改了哪里。
+
+我的建议：**每次提交前都先跑 `git status` 和 `git diff`。**
+
+### 提交修改
+
+```bash
+git add <文件名>
+git add .
+git commit -m "一句话说明这次修改"
+```
+
+- `git add <文件名>`：只加入指定文件。
+- `git add .`：加入当前目录下所有改动。
+- `git commit -m`：把准备好的改动保存成一个版本节点。
+
+新手建议优先用 `git add <文件名>`，少用 `git add .`。后者很方便，也很容易把不该提交的东西一起加进去。
+
+### 连接 GitHub
+
+```bash
+git remote -v
+git remote add origin <仓库地址>
+git push origin main
+git pull origin main
+```
+
+- `git remote -v`：查看本地仓库连接到哪个 GitHub 地址。
+- `git remote add origin`：给本地仓库添加线上地址。
+- `git push origin main`：把本地 `main` 分支推到 GitHub。
+- `git pull origin main`：把 GitHub 上的更新拉回本地。
+
+一句话：`push` 是上传，`pull` 是下载更新。
+
+### 分支操作
+
+```bash
+git branch
+git switch -c <新分支名>
+git switch <分支名>
+git merge <分支名>
+```
+
+- `git branch`：看有哪些分支。
+- `git switch -c`：新建并切换到一个分支。
+- `git switch`：切换到已有分支。
+- `git merge`：把另一个分支的修改合并进当前分支。
+
+分支可以理解成“草稿路线”。不确定的修改先放分支里，确认没问题再合并到 `main`。
+
+### 撤销和临时保存
+
+```bash
+git restore <文件名>
+git restore --staged <文件名>
+git stash
+git stash pop
+```
+
+- `git restore <文件名>`：丢弃某个文件还没提交的修改。
+- `git restore --staged <文件名>`：把文件从准备提交区拿出来，但保留文件内容。
+- `git stash`：临时收起当前修改。
+- `git stash pop`：把临时收起的修改拿回来。
+
+注意：`git restore <文件名>` 会丢掉本地未提交内容，运行前一定要看清楚。
+
+### 一个最常用的日常循环
+
+```bash
+git pull origin main
+git status
+# 修改文件
+git diff
+git add guide.md
+git commit -m "update guide"
+git push origin main
+```
+
+这就是大多数项目每天反复使用的 Git 流程：先同步、再修改、再检查、再提交、再推送。
+
+## 9. 新手操作清单
 
 第一次练习可以做一个最小项目：
 
@@ -185,7 +368,7 @@ git push                  # 推送到 GitHub
 git pull                  # 拉取别人或线上已有的修改
 ```
 
-## 8. 常见误区
+## 10. 常见误区
 
 - Git 不等于 GitHub：Git 是工具，GitHub 是平台。
 - GitHub Pages 不等于服务器：它适合展示静态页面，不适合跑后台程序。
@@ -193,7 +376,7 @@ git pull                  # 拉取别人或线上已有的修改
 - 不要一开始就追求复杂部署：先把 README、项目结构和版本记录做好。
 - 国内云服务器如果绑定域名，通常要提前考虑备案和访问环境。
 
-## 9. 结束语
+## 11. 结束语
 
 如果只记住一件事：**Git 和 GitHub 让项目更可靠，GitHub Pages 让项目更容易展示，ECS 让项目可以真正在线运行。**
 
